@@ -1,4 +1,5 @@
 mediagoblin-lepturecaptcha
 ==========================
 
-Implementation of Hsiaoming Yang's Python captcha for GNU MediaGoblin
+mediagoblin-lepturecaptcha is an implementation of Hsiaoming Yang's 
+Python captcha for GNU MediaGoblin.
