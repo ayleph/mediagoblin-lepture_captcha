@@ -25,7 +25,7 @@ from hashlib import sha1
 _log = logging.getLogger(__name__)
 
 
-def captcha_challenge(request):
+def extra_validation(register_form):
     config = pluginapi.get_config('mediagoblin.plugins.lepturecaptcha')
     captcha_secret = config.get('CAPTCHA_SECRET_PHRASE')
 

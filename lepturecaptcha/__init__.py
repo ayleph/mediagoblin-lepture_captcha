@@ -43,7 +43,7 @@ def setup_plugin():
     pluginapi.register_template_path(os.path.join(PLUGIN_DIR, 'templates'))
 
     pluginapi.register_template_hooks(
-        {'captcha_challenge': 'mediagoblin/plugins/lepturecaptcha/captcha_challenge.html'})
+        {'register_captcha': 'mediagoblin/plugins/lepturecaptcha/captcha_challenge.html'})
 
     _log.info('Done setting up lepturecaptcha!')
 
@@ -73,8 +73,7 @@ def add_to_form_context(context):
 
 hooks = {
     'setup': setup_plugin,
-    'auth_captcha_challenge': captcha_tools.captcha_challenge,
-    'auth_get_registration_form': get_registration_form,
+    'auth_extra_validation': captcha_tools.extra_validation,
     ('mediagoblin.auth.register',
      'mediagoblin/auth/register.html'): add_to_form_context,
 }
