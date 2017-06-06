@@ -29,20 +29,37 @@ def extra_validation(register_form):
     config = pluginapi.get_config('mediagoblin.plugins.lepturecaptcha')
     captcha_secret = config.get('CAPTCHA_SECRET_PHRASE')
 
+    for object in register_form:
+        print(object)
+    print(vars(register_form))
+
+    if 'captcha_response' in register_form:
+        captcha_response = register_form.captcha_response.data
+    if 'captcha_hash' in register_form:
+        captcha_hash = register_form.captcha_hash.data
+        if captcha_hash == u'':
+            for raw_data in register_form.captcha_hash.raw_data:
+                if raw_data != u'':
+                    captcha_hash = raw_data
+    if 'remote_address' in register_form:
+        remote_address = register_form.remote_address.data
+        if remote_address == u'':
+            for raw_data in register_form.remote_address.raw_data:
+                if raw_data != u'':
+                    remote_address = raw_data
+
     captcha_challenge_passes = False
 
-    captcha_hash = request.form['captcha_hash']
-    captcha_response = request.form['captcha_response']
-    remote_addr = request.remote_addr
-
-    captcha_response_hash = sha1(captcha_secret + captcha_response).hexdigest()
-    captcha_challenge_passes = (captcha_response_hash == captcha_hash)
+    if captcha_response and captcha_hash:
+        captcha_response_hash = sha1(captcha_secret + captcha_response).hexdigest()
+        captcha_challenge_passes = (captcha_response_hash == captcha_hash)
 
     if not captcha_challenge_passes:
-        _log.info('Failed registration attempt from %s', remote_addr)
-        messages.add_message(
-            request,
-            messages.WARNING,
-            _('Sorry, captcha was incorrect. Please try again.'))
+        register_form.captcha_response.errors.append(
+            _('Sorry, CAPTCHA attempt failed.'))
+        _log.info('Failed registration CAPTCHA attempt from %r.', remote_address)
+        _log.debug('captcha response is: %r', captcha_response)
+        _log.debug('captcha hash is: %r', captcha_hash)
+        _log.debug('captcha response hash is: %r', captcha_response_hash)
 
     return captcha_challenge_passes

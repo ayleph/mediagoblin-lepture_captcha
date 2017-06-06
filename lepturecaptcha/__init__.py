@@ -56,7 +56,8 @@ def setup_plugin():
 
     # Add plugin-specific fields to register_form class.
     register_form_class = register_form.__class__
-    register_form_class.captcha_response = wtforms.StringField('CAPTCHA response')
+    register_form_class.captcha_response = captcha_forms.CaptchaStringField('CAPTCHA response', id='captcha_response', name='captcha_response')
+    register_form_class.captcha_hash = wtforms.HiddenField('')
     register_form_class.remote_address = wtforms.HiddenField('')
 
     _log.info('Done setting up lepturecaptcha!')

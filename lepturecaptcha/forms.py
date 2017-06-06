@@ -16,12 +16,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import wtforms
 
-from mediagoblin.tools.translate import lazy_pass_to_ugettext as _
-from mediagoblin.auth.tools import normalize_user_or_email_field
-from mediagoblin.plugins.basic_auth import auth_forms
 
+class CaptchaStringField(wtforms.StringField):
+    '''
+    The below syntax for overriding the name of a field was copied from 
+    code posted on github.com at the link below.
 
-class CaptchaRegistrationForm(auth_forms.RegistrationForm):
-    captcha_response = wtforms.StringField(
-        _('Captcha response'),
-        [wtforms.validators.InputRequired()])
+    https://github.com/wtforms/wtforms/issues/205
+    '''
+    def __init__(self, *args, **kwargs):
+        name = kwargs.pop('name', None)
+        super(CaptchaStringField, self).__init__(*args, **kwargs)
+        if name:
+            self.name = name

@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+<input id="remote_address" name="remote_address" type="hidden" value="{{ request.access_route[-1] or request.remote_addr }}">
 <div class="captcha" >
   <img src="data:image/png;base64, {{ captcha_image }}"/>
   <form>
