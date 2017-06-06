@@ -35,11 +35,10 @@ def setup_plugin():
     _log.info('Setting up lepturecaptcha...')
 
     config = pluginapi.get_config('mediagoblin.plugins.lepturecaptcha')
-    captcha_secret = config.get('CAPTCHA_SECRET_PHRASE')
-
-    if captcha_secret == 'changeme':
-        configuration_error = 'You must change the captcha secret phrase.'
-        raise ImproperlyConfigured(configuration_error)
+    if config:
+        if config.get('CAPTCHA_SECRET_PHRASE') == 'changeme':
+            configuration_error = 'You must configure the captcha secret phrase.'
+            raise ImproperlyConfigured(configuration_error)
 
     pluginapi.register_template_path(os.path.join(PLUGIN_DIR, 'templates'))
 
