@@ -17,11 +17,14 @@
 import os
 import base64
 import logging
+import wtforms
 
 from mediagoblin.init import ImproperlyConfigured
 from mediagoblin.plugins.lepturecaptcha import forms as captcha_forms
 from mediagoblin.plugins.lepturecaptcha import tools as captcha_tools
 from mediagoblin.tools import pluginapi
+from werkzeug.test import create_environ
+from werkzeug.wrappers import Request
 
 from captcha.image import ImageCaptcha
 from hashlib import sha1
@@ -45,11 +48,18 @@ def setup_plugin():
     pluginapi.register_template_hooks(
         {'register_captcha': 'mediagoblin/plugins/lepturecaptcha/captcha_challenge.html'})
 
+    # Create dummy request object to find register_form.
+    environ = create_environ('/foo', 'http://localhost:8080/')
+    request = Request(environ)
+    register_form = pluginapi.hook_handle("auth_get_registration_form", request)
+    del request
+
+    # Add plugin-specific fields to register_form class.
+    register_form_class = register_form.__class__
+    register_form_class.captcha_response = wtforms.StringField('CAPTCHA response')
+    register_form_class.remote_address = wtforms.HiddenField('')
+
     _log.info('Done setting up lepturecaptcha!')
-
-
-def get_registration_form(request):
-    return captcha_forms.CaptchaRegistrationForm(request.form)
 
 
 def add_to_form_context(context):
