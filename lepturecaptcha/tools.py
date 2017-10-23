@@ -29,10 +29,6 @@ def extra_validation(register_form):
     config = pluginapi.get_config('mediagoblin.plugins.lepturecaptcha')
     captcha_secret = config.get('CAPTCHA_SECRET_PHRASE')
 
-    for object in register_form:
-        print(object)
-    print(vars(register_form))
-
     if 'captcha_response' in register_form:
         captcha_response = register_form.captcha_response.data
     if 'captcha_hash' in register_form:
